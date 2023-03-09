@@ -52,7 +52,9 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
       <!-- <h1>{{ number }}</h1> -->
       <button @click="plus()">+</button>
     </div>
-    <button class="buy">Buy ${{ Math.round(number * price * 100) / 100 }}</button>
+    <button class="buy coins">Buy
+      <Icon name="mingcute:coin-2-fill" />{{ Math.round(number * price * 100) / 100 }}
+    </button>
   </div>
 </template>
 
@@ -60,6 +62,12 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
 <style>
 .buy {
   font-size: 1.2rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.buy svg {
+  margin-left: 0.5rem;
 }
 
 .incrementer {
@@ -70,7 +78,8 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
   border-radius: 0.5rem;
   display: grid;
   place-items: center;
-  background: rgb(40, 40, 40);
+  background: rgb(35, 35, 35);
+  /* background: rgb(40, 40, 40); */
 }
 
 .incrementer img {
@@ -84,13 +93,13 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
   justify-content: center;
   flex-direction: row;
   background: rgb(51, 51, 51);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   gap: 0.5rem;
   padding: 0;
 }
 
 .increment button {
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   line-height: 0.5;
   margin: 0;
   padding: 0 0.5rem;

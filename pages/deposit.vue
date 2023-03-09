@@ -193,9 +193,9 @@ const selectedDeposit = ref()
         </div>
       </div>
       <!-- <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
-                    :instance-options="instanceOptions" :elements-options="elementsOptions">
-                    <StripeElement ref="card" :elements="elements" :options="cardOptions" />
-                  </StripeElements> -->
+                      :instance-options="instanceOptions" :elements-options="elementsOptions">
+                      <StripeElement ref="card" :elements="elements" :options="cardOptions" />
+                    </StripeElements> -->
       <button type="button" @click="pay">
         <h1 v-if="selectedDeposit">Pay {{ selectedDeposit }} €</h1>
         <h1 v-else class="disabled">Select amount</h1>
@@ -256,7 +256,7 @@ const selectedDeposit = ref()
 }
 
 .deposit-amounts>div.selected:nth-child(3) {
-  background: linear-gradient(45deg, #a7ed71, #51d881);
+  background: linear-gradient(45deg, #a7ed71, #34a853);
 }
 
 .deposit-amounts>div.selected:nth-child(4) {

@@ -1,7 +1,10 @@
 <script setup>
 
+const user = useSupabaseUser()
+const client = useSupabaseAuthClient()
+
 useHead({
-  title: 'CSGO Casino'
+  title: 'CS:GO Casino'
 })
 
 </script>
@@ -28,12 +31,15 @@ useHead({
         </nuxt-link>
       </div>
       <div class="right">
-        <p>
+        <p class="coins">
           <Icon name="mingcute:coin-2-fill" />50 Coins
         </p>
-        <nuxt-link to="/login">
+        <nuxt-link to="/login" v-if="!user">
           <Icon name="material-symbols:login-rounded" />Log in
         </nuxt-link>
+        <button v-else @click="client.auth.signOut()">
+          <Icon name="material-symbols:logout-rounded" />Logout
+        </button>
       </div>
     </nav>
     <NuxtPage />
@@ -93,11 +99,10 @@ nav a {
   gap: 0.2rem;
 }
 
-nav a:hover {
+nav a:hover,
+nav button:hover {
   background: rgb(40, 40, 40);
-
   color: white;
-  text-decoration: none;
 }
 
 nav .right>* {
@@ -108,11 +113,25 @@ nav .right>* {
   display: flex;
   align-items: center;
   gap: 0.2rem;
+  margin: 0;
+  height: 100%;
+  color: rgb(161, 161, 161);
+}
+
+.coins svg {
+  color: #ffc75f;
+}
+
+.coins {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
 
 button,
 input,
 select {
+  cursor: pointer;
   background: rgb(51, 51, 51);
   color: white;
   padding: 0.5rem;
