@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 // import { loadStripe } from '@stripe/stripe-js'
 // import { defineComponent, ref, onBeforeMount } from 'vue'
 // import StripeCard from '../components/StripeCard.vue'
@@ -62,88 +62,100 @@
 //   }
 // };
 
-import { StripeElements, StripeElement } from 'vue-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
-import { defineComponent, ref, onBeforeMount } from 'vue'
 
-export default defineComponent({
-  name: 'CardOnly',
 
-  components: {
-    StripeElements,
-    StripeElement,
-  },
 
-  setup() {
-    const selectedDeposit = ref()
-    const stripeKey = ref('pk_test_51LajZRACGdXEYjhpD83fSWVS0yQx9R7EPiW0hnKrWmgRqvfIkyzu4asgbvxaLTav2UKQUVspzXSlaE0H0XjrQIT8004c2J9iCe') // test key
-    const instanceOptions = ref({
-      // https://stripe.com/docs/js/initializing#init_stripe_js-options
-    })
-    const elementsOptions = ref({
-      // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
-    })
-    const cardOptions = ref({
-      // https://stripe.com/docs/stripe.js#element-options
-      value: {
-        postalCode: '12345',
-      },
-      style: {
-        base: {
-          iconColor: '#c4f0ff',
-          color: '#FFF',
-          fontWeight: '400',
-          fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
-          fontSize: '16px',
-          fontSmoothing: 'antialiased',
-          ':-webkit-autofill': {
-            color: '#fce883',
-          },
-          '::placeholder': {
-            color: '#9c9c9c',
-          },
-        },
-        invalid: {
-          iconColor: '#FFC7EE',
-          color: '#FFC7EE',
-        },
-      },
-    })
-    const stripeLoaded = ref(false)
-    const card = ref()
-    const elms = ref()
 
-    onBeforeMount(() => {
-      const stripePromise = loadStripe(stripeKey.value)
-      stripePromise.then(() => {
-        stripeLoaded.value = true
-      })
-    })
+/* ------------------------------------- Real deal ------------------------------------------- */
 
-    const pay = () => {
-      // Get stripe element
-      const cardElement = card.value.stripeElement
+// import { StripeElements, StripeElement } from 'vue-stripe-js'
+// import { loadStripe } from '@stripe/stripe-js'
+// import { defineComponent, ref, onBeforeMount } from 'vue'
 
-      // Access instance methods, e.g. createToken()
-      elms.value.instance.createToken(cardElement).then((result) => {
-        // Handle result.error or result.token
-        console.log(result)
-      })
-    }
+// export default defineComponent({
+//   name: 'CardOnly',
 
-    return {
-      selectedDeposit,
-      stripeKey,
-      stripeLoaded,
-      instanceOptions,
-      elementsOptions,
-      cardOptions,
-      card,
-      elms,
-      pay
-    }
-  },
-})
+//   components: {
+//     StripeElements,
+//     StripeElement,
+//   },
+
+//   setup() {
+//     const selectedDeposit = ref()
+//     const stripeKey = ref('pk_test_51LajZRACGdXEYjhpD83fSWVS0yQx9R7EPiW0hnKrWmgRqvfIkyzu4asgbvxaLTav2UKQUVspzXSlaE0H0XjrQIT8004c2J9iCe') // test key
+//     const instanceOptions = ref({
+//       // https://stripe.com/docs/js/initializing#init_stripe_js-options
+//     })
+//     const elementsOptions = ref({
+//       // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
+//     })
+//     const cardOptions = ref({
+//       // https://stripe.com/docs/stripe.js#element-options
+//       value: {
+//         postalCode: '12345',
+//       },
+//       style: {
+//         base: {
+//           iconColor: '#c4f0ff',
+//           color: '#FFF',
+//           fontWeight: '400',
+//           fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+//           fontSize: '16px',
+//           fontSmoothing: 'antialiased',
+//           ':-webkit-autofill': {
+//             color: '#fce883',
+//           },
+//           '::placeholder': {
+//             color: '#9c9c9c',
+//           },
+//         },
+//         invalid: {
+//           iconColor: '#FFC7EE',
+//           color: '#FFC7EE',
+//         },
+//       },
+//     })
+//     const stripeLoaded = ref(false)
+//     const card = ref()
+//     const elms = ref()
+
+//     onBeforeMount(() => {
+//       const stripePromise = loadStripe(stripeKey.value)
+//       stripePromise.then(() => {
+//         stripeLoaded.value = true
+//       })
+//     })
+
+//     const pay = () => {
+//       // Get stripe element
+//       const cardElement = card.value.stripeElement
+
+//       // Access instance methods, e.g. createToken()
+//       elms.value.instance.createToken(cardElement).then((result) => {
+//         // Handle result.error or result.token
+//         console.log(result)
+//       })
+//     }
+
+//     return {
+//       selectedDeposit,
+//       stripeKey,
+//       stripeLoaded,
+//       instanceOptions,
+//       elementsOptions,
+//       cardOptions,
+//       card,
+//       elms,
+//       pay
+//     }
+//   },
+// })
+
+</script> -->
+
+<script setup>
+
+const selectedDeposit = ref()
 
 </script>
 
@@ -180,10 +192,10 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
-        :instance-options="instanceOptions" :elements-options="elementsOptions">
-        <StripeElement ref="card" :elements="elements" :options="cardOptions" />
-      </StripeElements>
+      <!-- <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
+                    :instance-options="instanceOptions" :elements-options="elementsOptions">
+                    <StripeElement ref="card" :elements="elements" :options="cardOptions" />
+                  </StripeElements> -->
       <button type="button" @click="pay">
         <h1 v-if="selectedDeposit">Pay {{ selectedDeposit }} €</h1>
         <h1 v-else class="disabled">Select amount</h1>
@@ -214,7 +226,7 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .deposit-amounts>div>div {
@@ -299,7 +311,7 @@ export default defineComponent({
 .trust .cards {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 2rem;
 }
 
