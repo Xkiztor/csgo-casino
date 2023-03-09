@@ -25,7 +25,7 @@ const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bit
         <input type="emial" placeholder="Email">
         <input type="password" placeholder="Password">
         <button>Login</button>
-        <p>No account? <span @click="hasAccount = true">LOGIN</span></p>
+        <p>No account? <span @click="hasAccount = false">LOGIN</span></p>
       </form>
       <form v-else>
         <input type="emial" placeholder="Email">
