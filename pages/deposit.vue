@@ -157,6 +157,13 @@
 
 const selectedDeposit = ref()
 
+const selectedToId = computed(() => {
+  if (selectedDeposit.value === 5) return 1
+  if (selectedDeposit.value === 10) return 2
+  if (selectedDeposit.value === 25) return 3
+  if (selectedDeposit.value === 100) return 4
+})
+
 const pay = () => {
   fetch('https://stripe-server-avlk.onrender.com/create-checkout-session', {
     method: 'POST',
@@ -164,7 +171,7 @@ const pay = () => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      items: [{ id: 1, quantity: 1 }],
+      items: [{ id: selectedToId.value, quantity: 1 }],
     }),
   })
     .then((res) => {
@@ -215,9 +222,9 @@ const pay = () => {
         </div>
       </div>
       <!-- <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
-              :instance-options="instanceOptions" :elements-options="elementsOptions">
-              <StripeElement ref="card" :elements="elements" :options="cardOptions" />
-            </StripeElements> -->
+                  :instance-options="instanceOptions" :elements-options="elementsOptions">
+                  <StripeElement ref="card" :elements="elements" :options="cardOptions" />
+                </StripeElements> -->
       <button type="button" @click="pay()">
         <h1 v-if="selectedDeposit">Pay {{ selectedDeposit }} €</h1>
         <h1 v-else class="disabled">Select amount</h1>
