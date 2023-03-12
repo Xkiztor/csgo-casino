@@ -82,8 +82,18 @@ const { ready, start, stop } = useTimeout(3000, { controls: true })
 
 .side-choser button,
 .side-choser img {
-  width: 13rem;
-  height: 13rem;
+  width: 40vw;
+  height: 40vw;
+}
+
+@media screen and (min-width: 500px) {
+
+  .side-choser button,
+  .side-choser img {
+    width: 13rem;
+    height: 13rem;
+  }
+
 }
 
 .side-choser button:hover {

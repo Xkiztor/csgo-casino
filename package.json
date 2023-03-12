@@ -8,11 +8,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/supabase": "^0.3.1",
     "@vueuse/core": "^9.13.0",
     "@vueuse/nuxt": "^9.13.0",
     "nuxt": "^3.2.3",
     "nuxt-icon": "^0.3.2",
-    "@nuxtjs/supabase": "^0.3.1"
+    "vue-stripe-js": "^1.0.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@stripe/stripe-js": "^1.48.0"
+  }
 }

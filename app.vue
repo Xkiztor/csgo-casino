@@ -1,7 +1,49 @@
 <script setup>
-
 const user = useSupabaseUser()
-const client = useSupabaseAuthClient()
+const client = useSupabaseClient()
+
+const state = useGlobalState()
+
+console.log(user.value?.id)
+
+// const client = useSupabaseClient()
+// const { data } = await client
+//   .from('user-data')
+//   .select()
+//   .eq('user_id', user.value?.id)
+//   .single()
+
+const userData = ref([])
+
+const { width, height } = useWindowSize()
+const showMenu = ref(false)
+
+watch(user, (newVal, oldVal) => {
+  if (newVal?.id !== oldVal?.id) {
+    if (user.value.id) {
+      fetchUserData()
+    }
+  }
+})
+
+const createUserInDatabase = async () => {
+  console.log('creating in databse');
+  const { error: pushError } = await client
+    .from('user-data')
+    .insert({ user_id: user.value?.id, coins: 50, email: user.value?.email })
+  if (pushError) {
+    console.log(pushError);
+  }
+}
+
+watch(user, (newVal, oldVal) => {
+  console.log('user id changed');
+  if (newVal?.id !== oldVal?.id) {
+    if (user.value?.id) {
+      createUserInDatabase()
+    }
+  }
+})
 
 useHead({
   title: 'CS:GO Casino'
@@ -12,10 +54,17 @@ useHead({
 <template>
   <div class="page">
     <nav>
-      <div class="left">
+      <div class="top">
         <div class="logo">
-
+          <nuxt-link to="/">
+            <h1><span class="styled-text">CS:GO Casino</span></h1>
+          </nuxt-link>
         </div>
+        <button class="hamburger" @click="showMenu = !showMenu">
+          <Icon name="icon-park-outline:hamburger-button" />
+        </button>
+      </div>
+      <div class="left" v-if="showMenu || width > 700">
         <nuxt-link to="/">
           <Icon name="material-symbols:home-rounded" />
           Home
@@ -30,15 +79,19 @@ useHead({
           <Icon name="material-symbols:flip-camera-android-rounded" />Coinflip
         </nuxt-link>
       </div>
-      <div class="right">
+      <div class="right" v-if="showMenu || width > 700">
         <p class="coins">
-          <Icon name="mingcute:coin-2-fill" />50 Coins
+          <Icon name="mingcute:coin-2-fill" />
+          <span v-if="user?.id">{{ state.coins.value }}</span>
+          <span v-else>0</span>
         </p>
         <nuxt-link to="/login" v-if="!user">
-          <Icon name="material-symbols:login-rounded" />Log in
+          <Icon name="material-symbols:login-rounded" />
+          <p>Log in</p>
         </nuxt-link>
         <button v-else @click="client.auth.signOut()">
-          <Icon name="material-symbols:logout-rounded" />Logout
+          <Icon name="material-symbols:logout-rounded" />
+          <p>Logout</p>
         </button>
       </div>
     </nav>
@@ -67,25 +120,40 @@ useHead({
   width: 100vw;
 }
 
+/* -------- NAVBAR ------------- */
+
 nav {
   background: rgb(30, 30, 30);
   padding: 1rem;
   width: 100%;
-  gap: 1rem;
+  transition: all 500ms;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr min-content;
+}
+
+nav .top {
+  grid-column: 1 / 3;
   display: flex;
   justify-content: space-between;
-  transition: all 500ms;
 }
 
 nav>div {
   display: flex;
   gap: 1rem;
   align-items: center;
+  justify-content: space-evenly;
 }
 
-.router-link-active {
-  /* border-bottom: 3px solid gray; */
+nav .right,
+nav .left {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.router-link-active:not(.logo a) {
   color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 nav a {
@@ -107,6 +175,7 @@ nav button:hover {
 
 nav .right>* {
   font-size: 1rem;
+  line-height: 1.6;
   padding: 0.5rem;
   border-radius: 0.5rem;
   background: rgb(35, 35, 35);
@@ -114,9 +183,58 @@ nav .right>* {
   align-items: center;
   gap: 0.2rem;
   margin: 0;
-  height: 100%;
   color: rgb(161, 161, 161);
 }
+
+nav .logo * {
+  padding: 0;
+  line-height: 1;
+  font-size: 1.5rem;
+}
+
+nav .right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+nav .nav-wrapper {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+@media screen and (min-width: 700px) {
+  nav {
+    gap: 1rem;
+    display: flex;
+  }
+
+  nav .hamburger {
+    display: none;
+  }
+
+  nav .nav-wrapper,
+  nav .left,
+  nav .right {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  nav .right {
+    margin-left: auto;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  nav .logo * {
+    font-size: 2rem;
+  }
+}
+
+/* -------- NAVBAR END ------------- */
 
 .coins svg {
   color: #ffc75f;

@@ -1,38 +1,50 @@
 <script setup lang='ts'>
 const user = useSupabaseUser()
-const client = useSupabaseAuthClient()
+
+
+const client = useSupabaseClient()
+
+const authClient = useSupabaseAuthClient()
 const router = useRouter()
+
+if (user.value) router.push('/')
 
 const hasAccount = ref(true)
 
 // Login method using providers
 const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bitbucket') => {
-  const { error } = await client.auth.signInWithOAuth({ provider })
+  const { error } = await authClient.auth.signInWithOAuth({ provider })
   if (error) {
     return alert('Something went wrong !')
   }
-  router.push('/')
 }
 </script>
 
 
 <template>
   <div class="login">
-    <button @click="loginWithProvider('google')">Login with Google</button>
     <div>
-
+      <h1 v-if="hasAccount">Login</h1>
+      <h1 v-else>Create Account</h1>
       <form v-if="hasAccount">
-        <input type="emial" placeholder="Email">
-        <input type="password" placeholder="Password">
-        <button>Login</button>
-        <p>No account? <span @click="hasAccount = false">LOGIN</span></p>
+        <label for="">Email</label>
+        <input type="emial" placeholder="">
+        <label for="">Password</label>
+        <input type="password" placeholder="">
+        <button class="create">Login</button>
+        <p>No account? <span class="click-me" @click="hasAccount = false">Sign Up</span></p>
       </form>
       <form v-else>
-        <input type="emial" placeholder="Email">
-        <input type="password" placeholder="Password">
-        <button>Create Account</button>
-        <p>Already a user? <span @click="hasAccount = true">LOGIN</span></p>
+        <label for="">Email</label>
+        <input type="emial" placeholder="">
+        <label for="">Password</label>
+        <input type="password" placeholder="">
+        <button class="create">Create Account</button>
+        <p>Already a user? <span class="click-me" @click="hasAccount = true">Sign In</span></p>
       </form>
+      <button class="provider-login" @click="loginWithProvider('google')">
+        <Icon name="logos:google-icon" />Login with Google
+      </button>
     </div>
 
   </div>
@@ -46,11 +58,52 @@ const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bit
 }
 
 .login h1 {
-  font-size: 1.7rem;
+  font-size: 3rem;
 }
 
 .login form {
   display: flex;
   flex-direction: column;
+}
+
+.login input,
+.login button {
+  margin: 0 0 1rem;
+  padding: 0.7rem;
+}
+
+.login label {
+  margin: 0.2rem 0;
+}
+
+.login p {
+  text-align: center;
+}
+
+.login .create {
+  margin-top: 0.5rem;
+}
+
+@media screen and (min-width: 700px) {
+  .login {
+    width: 50vw;
+    max-width: 30rem;
+  }
+}
+
+.click-me {
+  color: #0645AD;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.login .provider-login {
+  padding: 1rem;
+  width: 100%;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
 }
 </style>
