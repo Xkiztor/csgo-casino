@@ -53,9 +53,7 @@ const testAdd = () => {
 }
 
 const testFetch = () => {
-
-
-  fetch('https://stripe-server-avlk.onrender.com//create-checkout-session', {
+  fetch('https://stripe-server-avlk.onrender.com/create-checkout-session', {
     // fetch('http://localhost:3000/create-checkout-session', {
     method: 'POST',
     headers: {
@@ -86,9 +84,9 @@ const testFetch = () => {
     <button @click="testFetch()">click me</button>
 
     <!-- <div v-for="item in inventory">
-          {{ item.name }}
-          {{ item.count }}
-        </div> -->
+            {{ item.name }}
+            {{ item.count }}
+          </div> -->
   </div>
 </template>
 
