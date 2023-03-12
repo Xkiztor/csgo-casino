@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 // import { loadStripe } from '@stripe/stripe-js'
 // import { defineComponent, ref, onBeforeMount } from 'vue'
 // import StripeCard from '../components/StripeCard.vue'
@@ -68,96 +68,118 @@
 
 /* ------------------------------------- Real deal ------------------------------------------- */
 
-import { StripeElements, StripeElement } from 'vue-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
-// import { defineComponent, ref, onBeforeMount } from 'vue'
+// import { StripeElements, StripeElement } from 'vue-stripe-js'
+// import { loadStripe } from '@stripe/stripe-js'
+// // import { defineComponent, ref, onBeforeMount } from 'vue'
 
-export default defineComponent({
-  name: 'CardOnly',
+// export default defineComponent({
+//   name: 'CardOnly',
 
-  components: {
-    StripeElements,
-    StripeElement,
-  },
+//   components: {
+//     StripeElements,
+//     StripeElement,
+//   },
 
-  setup() {
-    const selectedDeposit = ref()
-    const stripeKey = ref('pk_test_51MiN9zIStCs9FA8OqLvMGmQW5dHEXF07ymeTju8ICczGzONXDtRDtLWKvOLNMMtsRUWCuQ8bJwhA1m5DyVTiYzew00IzZ1pwuF') // test key
-    const instanceOptions = ref({
-      // https://stripe.com/docs/js/initializing#init_stripe_js-options
-    })
-    const elementsOptions = ref({
-      // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
-    })
-    const cardOptions = ref({
-      // https://stripe.com/docs/stripe.js#element-options
-      value: {
-        postalCode: '12345',
-      },
-      style: {
-        base: {
-          iconColor: '#c4f0ff',
-          color: '#FFF',
-          fontWeight: '400',
-          fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
-          fontSize: '16px',
-          fontSmoothing: 'antialiased',
-          ':-webkit-autofill': {
-            color: '#fce883',
-          },
-          '::placeholder': {
-            color: '#9c9c9c',
-          },
-        },
-        invalid: {
-          iconColor: '#FFC7EE',
-          color: '#FFC7EE',
-        },
-      },
-    })
-    const stripeLoaded = ref(false)
-    const card = ref()
-    const elms = ref()
+//   setup() {
+//     const selectedDeposit = ref()
+//     const stripeKey = ref('pk_test_51MiN9zIStCs9FA8OqLvMGmQW5dHEXF07ymeTju8ICczGzONXDtRDtLWKvOLNMMtsRUWCuQ8bJwhA1m5DyVTiYzew00IzZ1pwuF') // test key
+//     const instanceOptions = ref({
+//       // https://stripe.com/docs/js/initializing#init_stripe_js-options
+//     })
+//     const elementsOptions = ref({
+//       // https://stripe.com/docs/js/elements_object/create#stripe_elements-options
+//     })
+//     const cardOptions = ref({
+//       // https://stripe.com/docs/stripe.js#element-options
+//       value: {
+//         postalCode: '12345',
+//       },
+//       style: {
+//         base: {
+//           iconColor: '#c4f0ff',
+//           color: '#FFF',
+//           fontWeight: '400',
+//           fontFamily: 'Roboto, Open Sans, Segoe UI, sans-serif',
+//           fontSize: '16px',
+//           fontSmoothing: 'antialiased',
+//           ':-webkit-autofill': {
+//             color: '#fce883',
+//           },
+//           '::placeholder': {
+//             color: '#9c9c9c',
+//           },
+//         },
+//         invalid: {
+//           iconColor: '#FFC7EE',
+//           color: '#FFC7EE',
+//         },
+//       },
+//     })
+//     const stripeLoaded = ref(false)
+//     const card = ref()
+//     const elms = ref()
 
-    onBeforeMount(() => {
-      const stripePromise = loadStripe(stripeKey.value)
-      stripePromise.then(() => {
-        stripeLoaded.value = true
-      })
-    })
+//     onBeforeMount(() => {
+//       const stripePromise = loadStripe(stripeKey.value)
+//       stripePromise.then(() => {
+//         stripeLoaded.value = true
+//       })
+//     })
 
-    const pay = () => {
-      // Get stripe element
-      const cardElement = card.value.stripeElement
+//     const pay = () => {
+//       // Get stripe element
+//       const cardElement = card.value.stripeElement
 
-      // Access instance methods, e.g. createToken()
-      elms.value.instance.createToken(cardElement).then((result) => {
-        // Handle result.error or result.token
-        console.log(result)
-      })
-    }
+//       // Access instance methods, e.g. createToken()
+//       elms.value.instance.createToken(cardElement).then((result) => {
+//         // Handle result.error or result.token
+//         console.log(result)
+//       })
+//     }
 
-    return {
-      selectedDeposit,
-      stripeKey,
-      stripeLoaded,
-      instanceOptions,
-      elementsOptions,
-      cardOptions,
-      card,
-      elms,
-      pay
-    }
-  },
-})
+//     return {
+//       selectedDeposit,
+//       stripeKey,
+//       stripeLoaded,
+//       instanceOptions,
+//       elementsOptions,
+//       cardOptions,
+//       card,
+//       elms,
+//       pay
+//     }
+//   },
+// })
 
-</script>
+</script> -->
 
-<!-- <script setup>
+<script setup>
 
 const selectedDeposit = ref()
 
-</script> -->
+const pay = () => {
+  fetch('https://stripe-server-avlk.onrender.com/create-checkout-session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      items: [{ id: 1, quantity: 1 }],
+    }),
+  })
+    .then((res) => {
+      if (res.ok) return res.json();
+      return res.json().then((json) => Promise.reject(json));
+    })
+    .then(({ url }) => {
+      window.location = url;
+    })
+    .catch((e) => {
+      console.error(e.error);
+    });
+}
+
+</script>
 
 <template>
   <div class="deposit">
@@ -192,11 +214,11 @@ const selectedDeposit = ref()
           </div>
         </div>
       </div>
-      <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
-        :instance-options="instanceOptions" :elements-options="elementsOptions">
-        <StripeElement ref="card" :elements="elements" :options="cardOptions" />
-      </StripeElements>
-      <button type="button" @click="pay">
+      <!-- <StripeElements v-if="stripeLoaded" v-slot="{ elements, instance }" ref="elms" :stripe-key="stripeKey"
+              :instance-options="instanceOptions" :elements-options="elementsOptions">
+              <StripeElement ref="card" :elements="elements" :options="cardOptions" />
+            </StripeElements> -->
+      <button type="button" @click="pay()">
         <h1 v-if="selectedDeposit">Pay {{ selectedDeposit }} €</h1>
         <h1 v-else class="disabled">Select amount</h1>
       </button>
