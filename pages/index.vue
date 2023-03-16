@@ -145,7 +145,7 @@ span.styled-text {
   border-radius: 1rem;
   /* padding: 1rem 0; */
   padding: 0;
-  overflow: scroll;
+  overflow-x: scroll;
   position: relative;
 }
 
