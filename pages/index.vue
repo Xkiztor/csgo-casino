@@ -50,36 +50,38 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
         <button @click="scrollX -= screenWidth * 0.5" class="left scroll-buttons">←</button>
         <button @click="scrollX += screenWidth * 0.5" class="right scroll-buttons">→</button>
         <div class="cases" ref="pageScrollEl">
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
+       
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            
         </div>
       </div>
     </section>
@@ -147,7 +149,10 @@ span.styled-text {
   padding: 0;
   overflow-x: scroll;
   position: relative;
+  scroll-snap-type: x mandatory;
 }
+  
+
 
 .cases-wrapper::before {
   width: 90%;
