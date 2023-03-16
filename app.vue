@@ -13,14 +13,14 @@ console.log(user.value?.id)
 //   .eq('user_id', user.value?.id)
 //   .single()
 
-const userData = ref([])
+const userData = ref()
 
 const { width, height } = useWindowSize()
 const showMenu = ref(false)
 
 watch(user, (newVal, oldVal) => {
   if (newVal?.id !== oldVal?.id) {
-    if (user.value.id) {
+    if (user.value?.id) {
       fetchUserData()
     }
   }
@@ -37,13 +37,32 @@ const createUserInDatabase = async () => {
 }
 
 watch(user, (newVal, oldVal) => {
+  console.log(user.value)
   console.log('user id changed');
   if (newVal?.id !== oldVal?.id) {
     if (user.value?.id) {
+      // if ()
       createUserInDatabase()
     }
   }
 })
+
+const fetchUserData = async () => {
+  const { data, error } = await client
+    .from('user-data')
+    .select()
+    .eq('user_id', `${user.value?.id}`)
+    .single();
+  if (data) {
+    userData.value = data;
+    console.log(data);
+  }
+  if (error) {
+    console.log(error);
+  }
+}
+
+fetchUserData()
 
 useHead({
   title: 'CS:GO Casino'
@@ -82,7 +101,8 @@ useHead({
       <div class="right" v-if="showMenu || width > 700">
         <p class="coins">
           <Icon name="mingcute:coin-2-fill" />
-          <span v-if="user?.id">{{ state.coins.value }}</span>
+          <span v-if="user?.id && userData">{{ userData.coins }}</span>
+          <!-- <span v-if="user?.id">{{ state.coins.value }}</span> -->
           <span v-else>0</span>
         </p>
         <nuxt-link to="/login" v-if="!user">
@@ -111,9 +131,13 @@ useHead({
   place-items: center;
   display: grid;
   grid-template-rows: min-content 1fr;
-  gap: 1rem;
+  /* gap: 1rem; */
   width: 100vw;
   min-height: 100vh;
+  /* background: linear-gradient(240deg, #4c6d33, #ff0000); */
+  /* background: #060606; */
+  background: linear-gradient(240deg, rgb(23, 21, 20), rgb(24, 22, 20));
+  padding-top: 7rem;
 }
 
 .page section {
@@ -123,13 +147,33 @@ useHead({
 /* -------- NAVBAR ------------- */
 
 nav {
-  background: rgb(30, 30, 30);
   padding: 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  z-index: 3;
   transition: all 500ms;
   display: grid;
+  backdrop-filter: blur(10px);
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr min-content;
+  /* filter: blur(5px); */
+}
+
+nav::before {
+  background: var(--element-background);
+  opacity: 0.5;
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+nav * {
+  opacity: 1;
 }
 
 nav .top {
@@ -152,12 +196,12 @@ nav .left {
 }
 
 .router-link-active:not(.logo a) {
-  color: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  color: var(--text-title);
+  box-shadow: var(--box-shadow-small);
 }
 
 nav a {
-  color: rgb(161, 161, 161);
+  color: var(--text-shaded);
   font-size: 1.1rem;
   text-decoration: none;
   padding: 0.5rem;
@@ -169,8 +213,8 @@ nav a {
 
 nav a:hover,
 nav button:hover {
-  background: rgb(40, 40, 40);
-  color: white;
+  background: var(--background-color-hover);
+  color: var(--text-title);
 }
 
 nav .right>* {
@@ -183,7 +227,7 @@ nav .right>* {
   align-items: center;
   gap: 0.2rem;
   margin: 0;
-  color: rgb(161, 161, 161);
+  color: var(--text-shaded);
 }
 
 nav .logo * {
@@ -237,7 +281,7 @@ nav .nav-wrapper {
 /* -------- NAVBAR END ------------- */
 
 .coins svg {
-  color: #ffc75f;
+  color: var(--coin-color);
 }
 
 .coins {
@@ -250,7 +294,8 @@ button,
 input,
 select {
   cursor: pointer;
-  background: rgb(51, 51, 51);
+  background: var(--interactive-color);
+  /* background: var(--element-gradient); */
   color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -259,7 +304,6 @@ select {
 }
 
 input {
-  background: rgb(51, 51, 51);
   color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
@@ -268,7 +312,7 @@ input {
 }
 
 button:hover {
-  background: rgb(59, 59, 59);
+  background: var(--interactive-color-hover);
 }
 
 h1 {

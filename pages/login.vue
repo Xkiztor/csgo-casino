@@ -1,11 +1,12 @@
 <script setup lang='ts'>
 const user = useSupabaseUser()
-
-
 const client = useSupabaseClient()
-
 const authClient = useSupabaseAuthClient()
+
 const router = useRouter()
+
+const loginEmail = ref()
+const loginPassword = ref()
 
 if (user.value) router.push('/')
 
@@ -18,6 +19,38 @@ const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bit
     return alert('Something went wrong !')
   }
 }
+
+const createAccount = async () => {
+  const { data, error } = await authClient.auth.signUp({
+    // email: 'example@email.com',
+    // password: 'iuhasdhiuh1'
+    email: `${loginEmail.value}`,
+    password: `${loginEmail.value}`
+  })
+  if (data) {
+    console.log(data);
+    loginWithEmail()
+  }
+  if (error) {
+    console.log(error);
+    return alert(error)
+  }
+}
+
+const loginWithEmail = async () => {
+  const { data, error } = await authClient.auth.signInWithPassword({
+    email: `${loginEmail.value}`,
+    password: `${loginEmail.value}`
+  })
+  if (data) {
+    console.log(data);
+    router.push('/')
+  }
+  if (error) {
+    console.log(error);
+    return alert(error)
+  }
+}
 </script>
 
 
@@ -26,21 +59,21 @@ const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bit
     <div>
       <h1 v-if="hasAccount">Login</h1>
       <h1 v-else>Create Account</h1>
-      <form v-if="hasAccount">
+      <form v-if="hasAccount" @submit.prevent="loginWithEmail()">
         <label for="">Email</label>
-        <input type="emial" placeholder="">
+        <input type="email" placeholder="" v-model="loginEmail">
         <label for="">Password</label>
-        <input type="password" placeholder="">
-        <button class="create">Login</button>
+        <input type="password" placeholder="" v-model="loginPassword">
+        <button class="create" @click.prevent="loginWithEmail()">Login</button>
         <p>No account? <span class="click-me" @click="hasAccount = false">Sign Up</span></p>
       </form>
-      <form v-else>
+      <form v-else @submit.prevent="createAccount()">
         <label for="">Email</label>
-        <input type="emial" placeholder="">
+        <input type="email" placeholder="" v-model="loginEmail">
         <label for="">Password</label>
-        <input type="password" placeholder="">
-        <button class="create">Create Account</button>
-        <p>Already a user? <span class="click-me" @click="hasAccount = true">Sign In</span></p>
+        <input type="password" placeholder="" v-model="loginPassword">
+        <button class="create"> Create Account </button>
+        <p> Already a user ? <span class="click-me" @click="hasAccount = true">Sign In</span></p>
       </form>
       <button class="provider-login" @click="loginWithProvider('google')">
         <Icon name="logos:google-icon" />Login with Google
@@ -70,6 +103,10 @@ const loginWithProvider = async (provider: 'github' | 'google' | 'gitlab' | 'bit
 .login button {
   margin: 0 0 1rem;
   padding: 0.7rem;
+}
+
+.login input {
+  width: 100%;
 }
 
 .login label {

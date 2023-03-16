@@ -78,7 +78,7 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
   border-radius: 0.5rem;
   display: grid;
   place-items: center;
-  background: rgb(35, 35, 35);
+  /* background: rgb(35, 35, 35); */
   /* background: rgb(40, 40, 40); */
 }
 
@@ -88,14 +88,36 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
   height: 10rem;
 }
 
+
+.incrementer::before {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  background: linear-gradient(160deg, rgb(35, 35, 35), rgba(28, 27, 25, 1));
+  /* background: rgb(35, 35, 35) ; */
+  border-radius: 0.5rem;
+  /* background: linear-gradient(100deg, #34a853, #a7ed71); */
+  /* filter: blur(1px); */
+  opacity: 0.7;
+}
+
 .increment {
   display: flex;
   justify-content: center;
   flex-direction: row;
-  background: rgb(51, 51, 51);
+  background: var(--interactive-color);
+  /* background: rgb(51, 51, 51); */
   border-radius: 0.5rem;
   gap: 0.5rem;
   padding: 0;
+}
+
+.incrementer button,
+.incrementer input {
+  opacity: 0.9;
 }
 
 .increment button {
@@ -120,6 +142,7 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
 
 .increment input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .increment * {

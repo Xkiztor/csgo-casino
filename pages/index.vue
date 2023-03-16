@@ -43,99 +43,46 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
 
 <template>
   <div class="home-page">
-  <section>
-    <h1><span class="styled-text">Buy Cases</span></h1>
-    <div class="cases-wrapper">
-      <button @click="scrollX -= screenWidth * 0.5" class="left scroll-buttons">←</button>
-      <button @click="scrollX += screenWidth * 0.5" class="right scroll-buttons">→</button>
-      <div class="cases" ref="pageScrollEl">
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
-        <Case :price="9" />
-        <Case :price="5" />
-        <Case :price="2" />
-        <Case :price="100" />
-        <Case :price="1" />
+    <section>
+      <h1><span class="bg-text">Buy Cases</span></h1>
+      <!-- <h1><span class="styled-text">Buy Cases</span></h1> -->
+      <div class="cases-wrapper">
+        <button @click="scrollX -= screenWidth * 0.5" class="left scroll-buttons">←</button>
+        <button @click="scrollX += screenWidth * 0.5" class="right scroll-buttons">→</button>
+        <div class="cases" ref="pageScrollEl">
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+          <Case :price="9" />
+          <Case :price="5" />
+          <Case :price="2" />
+          <Case :price="100" />
+          <Case :price="1" />
+        </div>
       </div>
-    </div>
-  </section>
-  <!-- <div class="skin-browse-container">
-    <div class="top-controls">
-      <form @submit.prevent>
-          <select name="" id="" v-model="sortColumn" @change="fetcher()">
-            <option value="price">Price</option>
-            <option value="default">Default</option>
-            <option value="quantity">Quantity</option>
-            <option value="name">Name</option>
-          </select>
-          <select name="" id="" v-model="sortDir" @change="fetcher()">
-            <option value="asc">Ascendin</option>
-                                                                                                                                                                                                                                                                                                                  <option value="desc">Descending</option>
-                                                                                                                                                                                                                                                                                                                </select>
-                                                                                                                                                                                                                                                                                                                <input type="text" v-model="query" @change="pageStart = 1">
-                                                                                                                                                                                                                                                                                                                <button @click="fetcher()">Seach</button>
-                                                                                                                                                                                                                                                                                                              </form>
-                                                                                                                                                                                                                                                                                                              <div class="pagination">
-                                                                                                                                                                                                                                                                                                                <button @click="pageNumber -= 1">Previus</button>
-                                                                                                                                                                                                                                                                                                                <input type="number" v-model="pageNumber" min="1">
-                                                                                                                                                                                                                                                                                                                <button @click="pageNumber += 1">Next</button>
-                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                            <div class="screen-cover" v-if="showBigImage">
-                                                                                                                                                                                                                                                                                                              <div ref="outsideClickEl">
-                                                                                                                                                                                                                                                                                                                <button @click="showBigImage = false">Close</button>
-                                                                                                                                                                                                                                                                                                                <img :src="bigImageUrl" alt="">
-                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                            <div class="skin-grid">
-                                                                                                                                                                                                                                                                                                                            <div v-for="item in array.results" :key="item.asset_description.classid" class="skin-card">
-                                                                                                                                                                                                                                                                                                                              <img @click="showBigImage = true,
-                                                                                                                                                                                                                                                                                                                                bigImageUrl = 'https://community.akamai.steamstatic.com/economy/image/' + item.asset_description.icon_url"
-                                                                                                                                                                                                                                                                                                                                :src="'https://community.akamai.steamstatic.com/economy/image/' + item.asset_description.icon_url" alt="">
-                                                                                                                                                                                                                                                                                                                              <div>
-                                                                                                                                                                                                                                                                                                                                <h2 :style="{ color: '#' + item.asset_description.name_color }">
-                                                                                                                                                                                                                                                                                                                                  {{ item.name }}
-                                                                                                                                                                                                                                                                                                                                </h2>
-                                                                                                                                                                                                                                                                                                                                <p>
-                                                                                                                                                                                                                                                                                                                                  {{ item.sell_price_text }} - count: {{ item.sell_listings }}
-                                                                                                                                                                                                                                                                                                                                </p>
-                                                                                                                                                                                                                                                                                                                                <a v-if="item.asset_description.market_actions" :href="item.asset_description.market_actions[0].link">Inspect
-                                                                                                                                                                                                                                                                                                                                  in
-                                                                                                                                                                                                                                                                                                                                  game</a>
-                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                          </div>
-                                                                                                                                                                                                                                                                                                            <p v-if="!array.results">Item not found</p>
-
-                                                                                                                                                                                                                                                                                                            <div class="pagination">
-                                                                                                                                                                                                                                                                                                              <button @click="pageNumber -= 1">Previus</button>
-                                                                                                                                                                                                                                                                                                              <input type="number" v-model="pageNumber">
-                                                                                                                                                                                                                                                                                                              <button @click="pageNumber += 1">Next</button>
-                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                          </div> -->
+    </section>
   </div>
 </template>
 
@@ -145,14 +92,30 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
   display: flex;
   width: 100%;
   flex-direction: column;
+  min-height: 100%;
+  /* opacity: 0.5; */
+}
+
+.home-page h1 {
+  margin: 2rem 0;
+}
+
+.bg-text {
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -.025em;
+  font-weight: 800;
+  background: var(--orange-gradient);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--background-color);
 }
 
 span.styled-text {
   line-height: 1;
   letter-spacing: -.025em;
   font-weight: 800;
-  background: linear-gradient(-10deg, #34a853, #a7ed71);
-  /* background: linear-gradient(-45deg, #ff9671, #ffc75f); */
+  background: var(--orange-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -170,7 +133,62 @@ span.styled-text {
   }
 }
 
-.top-controls {
+
+.cases {
+  display: flex;
+  flex-direction: row;
+  height: fit-content;
+  /* width: 100%; */
+  margin: 0 0 2rem;
+  /* background: rgb(31, 31, 31); */
+  gap: 1rem;
+  border-radius: 1rem;
+  /* padding: 1rem 0; */
+  padding: 0;
+  overflow: scroll;
+  position: relative;
+}
+
+.cases-wrapper::before {
+  width: 90%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  /* background: linear-gradient(100deg, #34a853, #a7ed71); */
+  filter: blur(100px);
+  opacity: 0.2;
+}
+
+.cases-wrapper {
+  padding: 0 2rem;
+  position: relative;
+}
+
+.scroll-buttons {
+  /* width: 100%; */
+  /* display: flex; */
+  position: absolute;
+  top: 50%;
+  border-radius: 0.5rem;
+  box-shadow: var(--box-shadow-small);
+  transform: translate(0, -50%);
+  z-index: 3;
+  /* justify-content: space-between; */
+}
+
+.scroll-buttons.left {
+  left: 2rem;
+}
+
+.scroll-buttons.right {
+  right: 2rem;
+}
+
+/* ---------- SKIN BROWSE (gammal) --------- */
+
+/* .top-controls {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -219,7 +237,7 @@ span.styled-text {
 }
 
 .screen-cover>div {
-  background: rgb(32, 32, 32);
+  background: var(--element-background);
   padding: 2rem;
   border-radius: 1rem;
   position: relative;
@@ -254,44 +272,7 @@ span.styled-text {
 
 .skin-card img {
   height: 6rem;
-}
+} */
 
-.cases {
-  display: flex;
-  flex-direction: row;
-  height: fit-content;
-  /* width: 100%; */
-  margin: 0 0 2rem;
-  /* background: rgb(31, 31, 31); */
-  gap: 1rem;
-  border-radius: 1rem;
-  padding: 1rem;
-  overflow: scroll;
-  position: relative;
-}
-
-.cases-wrapper {
-  padding: 0 2rem;
-  position: relative;
-}
-
-.scroll-buttons {
-  /* width: 100%; */
-  /* display: flex; */
-  position: absolute;
-  top: 50%;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
-  transform: translate(0, -50%);
-  z-index: 3;
-  /* justify-content: space-between; */
-}
-
-.scroll-buttons.left {
-  left: 2rem;
-}
-
-.scroll-buttons.right {
-  right: 2rem;
-}
+/* ------------------- */
 </style>

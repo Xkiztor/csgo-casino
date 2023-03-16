@@ -1,20 +1,31 @@
 <script setup lang='ts'>
-import { ref } from 'vue';
-import { promiseTimeout, useTimeout } from '@vueuse/core'
-
+const user = useSupabaseUser()
+const client = useSupabaseClient()
+const authClient = useSupabaseAuthClient()
 
 const chosenSide = ref('')
 const winnerSide = ref('')
 const youWon = ref(false)
+const coinsChange = ref(0)
+
+const bet = ref(0)
+const hasChosenBet = ref(false)
+
+
+const { ready, start, stop } = useTimeout(3000, { controls: true })
 
 const flip = () => {
   if (!winnerSide.value) {
+    start()
     let number = Math.random()
     console.log(number);
     if (number > 0.5) {
       winnerSide.value = 'ct'
       if (winnerSide.value === chosenSide.value) {
         youWon.value = true
+
+      } else {
+
       }
     } else {
       winnerSide.value = 't'
@@ -22,15 +33,66 @@ const flip = () => {
   }
 }
 
-const { ready, start, stop } = useTimeout(3000, { controls: true })
+const userData = ref()
+
+const fetchUserData = async () => {
+  const { data, error } = await client
+    .from('user-data')
+    .select()
+    .eq('user_id', `${user.value?.id}`)
+    .single();
+  if (data) {
+    userData.value = data;
+    console.log(data);
+  }
+  if (error) {
+    console.log(error);
+  }
+}
+
+fetchUserData()
+
+const newCoinAmount = computed(() => {
+  console.log(userData.value?.coins);
+  if (youWon.value) {
+    return userData.value?.coins + bet.value
+  } else {
+    return userData.value?.coins - bet.value
+  }
+})
+
+watch(newCoinAmount, () => {
+  updateUserCoins()
+})
+
+const updateUserCoins = async () => {
+  console.log('updating coins');
+  const { error } = await client
+    .from('user-data')
+    .update({ coins: newCoinAmount })
+    .eq('user_id', `${user.value?.id}`)
+  if (error) {
+    console.log(error);
+  }
+}
+
 </script>
 
 
 <template>
   <div class="coinflip">
     <!-- <h1>Coinflip</h1> -->
-
-    <div v-if="!chosenSide">
+    <div v-if="!hasChosenBet" class="bet">
+      <h1>Chose bet</h1>
+      <div class="bet-wrapper">
+        <div class="bet-input">
+          <Icon name="mingcute:coin-2-fill" />
+          <input type="nunmber" v-model="bet">
+        </div>
+        <button @click="hasChosenBet = true">Next</button>
+      </div>
+    </div>
+    <div v-if="!chosenSide && hasChosenBet">
       <h1>Chose side</h1>
       <div class="side-choser">
         <button @click="chosenSide = 'ct'">
@@ -41,18 +103,22 @@ const { ready, start, stop } = useTimeout(3000, { controls: true })
         </button>
       </div>
     </div>
-    <div v-else class="">
+    <div v-else-if="hasChosenBet" class="">
       <!-- <h1>You chose: {{ chosenSide === 'ct' ? 'Counter Terrorrist' : 'Terrorrist' }}</h1> -->
       <!-- <button" v-if="!winnerSide" class="flip">Flip</button> -->
-      <div class="coin" @click="flip(), start()"
+      <div class="coin" @click="flip()"
         :class="{ 't': winnerSide === 'ct', 'ct': winnerSide === 't', 'no-click': winnerSide }">
         <img src="../assets/ct.png" class="side-ct" alt="">
         <img src="../assets/t.png" class="side-t" alt="">
       </div>
       <div class="results" :class="{ 'show-results': ready && winnerSide }">
-        <p v-if="ready">{{ winnerSide === chosenSide ? 'You Won!' : 'You lost' }}</p>
+        <p v-if="ready">{{ winnerSide === chosenSide ? 'You Won!' : 'You lost' }} <span>
+            <Icon name="mingcute:coin-2-fill" />{{ youWon ? '' : '-' }}{{ coinsChange }}
+          </span></p>
         <p v-else>...</p>
-        <button @click="chosenSide = '', winnerSide = '', youWon = false">Play agian</button>
+        <button @click="chosenSide = '', winnerSide = '', youWon = false">
+          <Icon name="material-symbols:replay-rounded" />Play agian
+        </button>
       </div>
     </div>
   </div>
@@ -72,6 +138,34 @@ const { ready, start, stop } = useTimeout(3000, { controls: true })
   margin: auto 0;
   place-items: center;
   perspective: 800px;
+}
+
+.bet-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.bet-wrapper button {
+  margin: 0;
+  /* background: var(--element-gradient); */
+}
+
+.bet-input {
+  background: var(--element-gradient);
+  padding: 0.1rem 0.5rem;
+  font-size: 1.2rem;
+  border-radius: 0.5rem;
+}
+
+.bet-input input {
+  background: none;
+  font-size: 1.1rem;
+  width: 5rem;
+}
+
+.bet-input svg {
+  color: var(--coin-color);
 }
 
 
@@ -139,6 +233,43 @@ const { ready, start, stop } = useTimeout(3000, { controls: true })
   position: absolute;
   backface-visibility: hidden;
   /* -webkit-backface-visibility: hidden; */
+}
+
+.results {
+  display: grid;
+  place-items: center;
+}
+
+.results button,
+.bet button {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.results p {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.results span {
+  background: var(--element-background);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-direction: row;
+}
+
+.results span svg {
+  color: var(--coin-color);
 }
 
 .side-t {
