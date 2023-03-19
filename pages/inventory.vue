@@ -5,48 +5,16 @@ const client = useSupabaseClient();
 const userData = ref()
 const inventory = ref([])
 
-const fetchUserData = async () => {
-  const { data, error } = await client
-    .from('user-data')
-    .select()
-    .eq('user_id', `${user.value?.id}`)
-    .single();
-  if (data) {
-    userData.value = data;
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-};
+const globalState = useGlobalState()
 
-fetchUserData()
+globalState.fetchUserData()
 
-const updateUserData = async () => {
-  console.log('chaning');
-  const { data, error } = await client
-    .from('user-data')
-    // .update({ inventory: `${JSON.stringify(inventory.value)}` })
-    .update({
-      inventory: {
-        name: inventory[0].name,
-        count: inventory[0].count
-      }
-    })
-    .eq('user_id', `${user.value?.id}`)
-    .single();
-  if (data) {
-    userData.value = data;
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-};
 
-watch(inventory, () => {
-  updateUserData()
-})
+
+
+// watch(inventory, () => {
+//   updateUserData()
+// })
 
 const testAdd = () => {
   inventory.value.push({ name: 'Gamma dopple', count: 5 })
@@ -78,13 +46,14 @@ const showClass = ref(false)
     <!-- <button @click="testAdd">Add</button> -->
 
     <!-- <div v-for="item in inventory">
-                                                                {{ item.name }}
-                                                                {{ item.count }}
-                                                              </div> -->
+                                                                                        {{ item.name }}
+                                                                                        {{ item.count }}
+                                                                                      </div> -->
     <!-- <button @click="test()">Test</button> -->
-    <div @click="showClass = !showClass" :class="{ 'test-class': showClass === true }">
-      Test
-    </div>
+    <!-- <div @click="showClass = !showClass" :class="{ 'test-class': showClass === true }">
+                            Test
+                          </div> -->
+    <button @click="globalState.updateUserCoins(1900)">Click me</button>
   </div>
 </template>
 

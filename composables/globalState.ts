@@ -1,33 +1,54 @@
 import { ref, watch } from 'vue';
 import { createGlobalState, useStorage } from '@vueuse/core';
 import { createClient } from '@supabase/supabase-js';
-import { useSupabaseClient } from '@nuxtjs/supabase/dist/runtime/composables/useSupabaseClient';
-import { useSupabaseUser } from '@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser';
+import { useSupabaseClient } from '~/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseClient';
+// import { useSupabaseUser } from '@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser';
+import { useSupabaseUser } from '~/node_modules/@nuxtjs/supabase/dist/runtime/composables/useSupabaseUser';
 
 // const user = useSupabaseUser();
 // const client = useSupabaseClient();
 
 export const useGlobalState = createGlobalState(() => {
-  const inventory = ref([]);
-  const coins = ref(1000);
+  const client = useSupabaseClient();
+  const user = useSupabaseUser();
+
   const userData = ref();
 
-  // const fetchUserData = async () => {
-  //   const { data, error } = await client
-  //     .from('user-data')
-  //     .select()
-  //     .eq('user_id', `${user.value?.id}`)
-  //     .single();
-  //   if (data) {
-  //     userData.value = data;
-  //     inventory.value = userData.value.inventory;
-  //     coins.value = userData.value.coins;
-  //     console.log(data);
-  //   }
-  //   if (error) {
-  //     console.log(error);
-  //   }
-  // };
+  console.log(user.value);
 
-  return { inventory, coins, userData /*fetchUserData */ };
+  const fetchUserData = async () => {
+    const { data, error } = await client
+      .from('user-data')
+      .select()
+      .eq('user_id', `${user.value?.id}`)
+      .single();
+    if (data) {
+      userData.value = data;
+      console.log(data);
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
+
+  fetchUserData();
+
+  const updateUserCoins = async (newCoinAmount: number) => {
+    console.log('changing');
+    const { data, error } = await client
+      .from('user-data')
+      .update({ coins: newCoinAmount })
+      .eq('user_id', `${user.value?.id}`)
+      .select();
+    if (data) {
+      userData.value = data;
+      fetchUserData();
+      console.log(data);
+    }
+    if (error) {
+      console.log(error);
+    }
+  };
+
+  return { userData, fetchUserData, updateUserCoins };
 });

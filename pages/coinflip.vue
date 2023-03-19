@@ -1,9 +1,12 @@
 <script setup lang='ts'>
 import { createClient } from '@supabase/supabase-js'
+import { stat } from 'fs';
 
 const user = useSupabaseUser()
 const client = useSupabaseClient()
 const authClient = useSupabaseAuthClient()
+
+const globalState = useGlobalState()
 
 const chosenSide = ref('')
 const winnerSide = ref('')
@@ -16,7 +19,7 @@ const hasChosenBet = ref(false)
 
 const { ready, start, stop } = useTimeout(3000, { controls: true })
 
-const flip = () => {
+const flip = async () => {
   if (!winnerSide.value) {
     start()
     let number = Math.random()
@@ -24,77 +27,62 @@ const flip = () => {
     if (number > 0.5) {
       winnerSide.value = 'ct'
       if (winnerSide.value === chosenSide.value) {
+        console.log('you won');
         youWon.value = true
         coinsChange.value = bet.value
       } else {
+        console.log('you lost');
         youWon.value = false
         coinsChange.value = bet.value
       }
     } else {
       winnerSide.value = 't'
+      if (winnerSide.value === chosenSide.value) {
+        console.log('you won');
+        youWon.value = true
+        coinsChange.value = bet.value
+      } else {
+        console.log('you lost');
+        youWon.value = false
+        coinsChange.value = bet.value
+      }
     }
   }
 }
 
-const userData = ref()
 
-const fetchUserData = async () => {
-  const { data, error } = await client
-    .from('user-data')
-    .select()
-    .eq('user_id', `${user.value?.id}`)
-    .single();
-  if (data) {
-    userData.value = data;
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-}
-
-fetchUserData()
-
-const newCoinAmount = computed(() => {
-  console.log(userData.value?.coins);
-  if (winnerSide.value === chosenSide.value) {
-    return userData.value?.coins + bet.value
-  } else if (winnerSide.value !== chosenSide.value) {
-    return userData.value?.coins - bet.value
-  } else {
-    return userData.value?.coins
+watch(ready, () => {
+  console.log(ready.value);
+  if (ready.value && winnerSide.value) {
+    if (winnerSide.value === chosenSide.value) {
+      globalState.updateUserCoins(globalState.userData.value.coins + coinsChange.value)
+    } else {
+      globalState.updateUserCoins(globalState.userData.value.coins - coinsChange.value)
+    }
   }
 })
 
-watch(newCoinAmount, () => {
-  if (winnerSide.value) {
-    console.log(winnerSide.value);
-    console.log(newCoinAmount.value);
-    updateUserCoins()
-  }
-})
+// const newCoinAmount = computed(() => {
+//   console.log(globalState.userData.value?.coins);
+//   if (winnerSide.value === chosenSide.value) {
+//     return globalState.userData.value?.coins + bet.value
+//   } else if (winnerSide.value !== chosenSide.value) {
+//     return globalState.userData.value?.coins - bet.value
+//   } else {
+//     return globalState.userData.value?.coins
+//   }
+// })
+
+// watch(newCoinAmount, () => {
+//   if (winnerSide.value) {
+//     console.log(winnerSide.value);
+//     console.log(newCoinAmount.value);
+//     globalState.updateUserCoins(newCoinAmount.value)
+//   }
+// })
 
 
 
-const supabase = createClient('https://zsvsldggpmmvthlrpmjp.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzdnNsZGdncG1tdnRobHJwbWpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgxODY3MDAsImV4cCI6MTk5Mzc2MjcwMH0.HTUYigeFfBfDn-kp4pRF0DK29k8_2NLN-fEN7ZL3KZU')
-
-const updateUserCoins = async () => {
-  console.log('updating coins');
-  const { data, error } = await supabase
-    // const { data, error } = await client
-    .from('user-data')
-    .update({ coins: 52 })
-    .eq('email', 'ugo.linder@gmail.com')
-    // .eq('user_id', '101ca9bc-912b-45d1-a811-4b7029f5a57d')
-    // .eq('user_id', `${user.value?.id}`)
-    .select()
-  if (data) {
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-}
 
 </script>
 
@@ -110,7 +98,6 @@ const updateUserCoins = async () => {
           <input type="number" v-model="bet">
         </div>
         <button @click="hasChosenBet = true">Next</button>
-        <button @click="updateUserCoins()">test</button>
       </div>
     </div>
     <div v-if="!chosenSide && hasChosenBet">

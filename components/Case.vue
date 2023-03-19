@@ -52,9 +52,11 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
       <!-- <h1>{{ number }}</h1> -->
       <button @click="plus()">+</button>
     </div>
-    <button class="buy coins">Buy
-      <Icon name="mingcute:coin-2-fill" />{{ Math.round(number * price * 100) / 100 }}
-    </button>
+    <nuxt-link to="/case-open">
+      <button class="buy coins">Buy
+        <Icon name="mingcute:coin-2-fill" />{{ Math.round(number * price * 100) / 100 }}
+      </button>
+    </nuxt-link>
   </div>
 </template>
 
@@ -88,6 +90,9 @@ const { ready, start, stop } = useTimeout(1200, { controls: true })
   height: 10rem;
 }
 
+.incrementer a {
+  text-decoration: none;
+}
 
 .incrementer::before {
   width: 100%;
