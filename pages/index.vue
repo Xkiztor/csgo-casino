@@ -43,6 +43,18 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
 
 <template>
   <div class="home-page">
+    <!-- <svg viewBox="0 0 1440 320" class="wave">
+        <defs>
+          <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ff9671" />
+            <stop offset="100%" stop-color="#ffc75f" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0,256L24,218.7C48,181,96,107,144,80C192,53,240,75,288,96C336,117,384,139,432,128C480,117,528,75,576,53.3C624,32,672,32,720,48C768,64,816,96,864,133.3C912,171,960,213,1008,234.7C1056,256,1104,256,1152,224C1200,192,1248,128,1296,90.7C1344,53,1392,43,1416,37.3L1440,32L1440,0L1416,0C1392,0,1344,0,1296,0C1248,0,1200,0,1152,0C1104,0,1056,0,1008,0C960,0,912,0,864,0C816,0,768,0,720,0C672,0,624,0,576,0C528,0,480,0,432,0C384,0,336,0,288,0C240,0,192,0,144,0C96,0,48,0,24,0L0,0Z"
+          fill="url(#myGradient)" stroke-width="5" />
+      </svg> -->
+
     <section>
       <h1><span class="bg-text">Buy Cases</span></h1>
       <!-- <h1><span class="styled-text">Buy Cases</span></h1> -->

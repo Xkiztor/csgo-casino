@@ -16,6 +16,7 @@
     "vue-stripe-js": "^1.0.1"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^1.48.0"
+    "@stripe/stripe-js": "^1.48.0",
+    "stripe": "^11.15.0"
   }
 }

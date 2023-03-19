@@ -51,6 +51,24 @@ watch(inventory, () => {
 const testAdd = () => {
   inventory.value.push({ name: 'Gamma dopple', count: 5 })
 }
+
+// const test = async () => {
+//   const { data: response } = await useFetch('/api/test', {
+//     method: 'post',
+//     body: { text: 'test' }
+//   })
+//   console.log(response);
+// }
+
+const test = async () => {
+  const { data } = await useFetch(() => '/api/hello')
+  console.log(data.value);
+}
+
+
+
+const showClass = ref(false)
+
 </script>
 
 <template>
@@ -60,9 +78,13 @@ const testAdd = () => {
     <!-- <button @click="testAdd">Add</button> -->
 
     <!-- <div v-for="item in inventory">
-              {{ item.name }}
-              {{ item.count }}
-            </div> -->
+                                                                {{ item.name }}
+                                                                {{ item.count }}
+                                                              </div> -->
+    <!-- <button @click="test()">Test</button> -->
+    <div @click="showClass = !showClass" :class="{ 'test-class': showClass === true }">
+      Test
+    </div>
   </div>
 </template>
 
@@ -72,5 +94,10 @@ const testAdd = () => {
   width: 100%;
   text-align: center;
   font-size: 7rem;
+}
+
+.test-class {
+  background: red;
+  height: 5rem;
 }
 </style>
