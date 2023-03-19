@@ -38,13 +38,11 @@ const flip = async () => {
     } else {
       winnerSide.value = 't'
       if (winnerSide.value === chosenSide.value) {
-        console.log('you won');
+        // console.log('you won');
         youWon.value = true
-        coinsChange.value = bet.value
       } else {
-        console.log('you lost');
+        // console.log('you lost');
         youWon.value = false
-        coinsChange.value = bet.value
       }
     }
   }
@@ -55,34 +53,12 @@ watch(ready, () => {
   console.log(ready.value);
   if (ready.value && winnerSide.value) {
     if (winnerSide.value === chosenSide.value) {
-      globalState.updateUserCoins(globalState.userData.value.coins + coinsChange.value)
+      globalState.updateUserCoins(globalState.userData.value.coins + bet.value)
     } else {
-      globalState.updateUserCoins(globalState.userData.value.coins - coinsChange.value)
+      globalState.updateUserCoins(globalState.userData.value.coins - bet.value)
     }
   }
 })
-
-// const newCoinAmount = computed(() => {
-//   console.log(globalState.userData.value?.coins);
-//   if (winnerSide.value === chosenSide.value) {
-//     return globalState.userData.value?.coins + bet.value
-//   } else if (winnerSide.value !== chosenSide.value) {
-//     return globalState.userData.value?.coins - bet.value
-//   } else {
-//     return globalState.userData.value?.coins
-//   }
-// })
-
-// watch(newCoinAmount, () => {
-//   if (winnerSide.value) {
-//     console.log(winnerSide.value);
-//     console.log(newCoinAmount.value);
-//     globalState.updateUserCoins(newCoinAmount.value)
-//   }
-// })
-
-
-
 
 </script>
 

@@ -35,30 +35,68 @@ let images = [
   'https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot6-iFBRv7ODcfi9P6s65mpS0mvLwOq7cqWdQ-sJ0xLzAo4rx2lfj_ko-Z2nxLNWQcQU-NwzX_gTqxrruhsLq6JzImiRq73E8pSGKGKM1zdg/360fx360f',
 ]
 
-let config = reactive({
-  elemementWidth: 200,
-  animationDuration: 5000 + 'ms'
-})
-
-const skinWrapper = ref(null)
-const { x } = useScroll(skinWrapper)
-
-const randomNumber = () => {
-  x.value = Math.floor(Math.random() * 5000 + 1)
-}
-
-onMounted(() => {
-  console.log(skinWrapper.value);
-})
-
-const centerNumber = computed(() => {
-  return skinWrapper?.clientWidth / 2 - 50 - jumpToNumber * 100
-  // return x.value + (skinWrapper.value?.clientWidth / 2)
-})
-
 const jumpToNumber = ref(0)
 
+let items = [
+  { name: 'A', prob: 0.5 },
+  { name: 'B', prob: 0.4 },
+  { name: 'C', prob: 0.09 },
+  { name: 'X', prob: 0.01 },
+]
+
+
+
+const selectItem = () => {
+  const totalProbability = items.reduce((acc, prob) => acc + prob.prob, 0);
+
+  const randomNum = Math.random() * totalProbability;
+
+  let probabilitySum = 0;
+  for (let i = 0; i < items.length; i++) {
+    probabilitySum += items[i].prob;
+    if (randomNum < probabilitySum) {
+      return items[i].name;
+    }
+  }
+}
+
+const probList = ref([])
+
+const genList = () => {
+  console.log('genList');
+  probList.value = []
+  for (let i = 0; i < 500; i++) {
+    probList.value.push(selectItem())
+  }
+  jumpToNumber.value = probList.value.indexOf('X')
+}
+
+genList()
+
+console.log(probList.value);
+console.log(probList.value.indexOf('X'));
+selectItem()
+
+let config = reactive({
+  elemementWidth: 200,
+  animationDuration: 5000
+})
+
+const animationDurationString = computed(() => config.animationDuration + 'ms')
+
+const skinWrapper = ref(null)
+
+const { ready, start, stop } = useTimeout(config.animationDuration, { controls: true })
+
+watch(ready, () => {
+  console.log(ready.value);
+})
+
+
+
+
 const jump = () => {
+  start()
   jumpToNumber.value = Math.floor(Math.random() * (skins.length - 10) + 10)
 }
 
@@ -77,8 +115,11 @@ const reset = () => {
   setTimeout(() => {
     config.animationDuration = oldDuration
   }, "100");
-
 }
+
+const translateAmount = computed(() => {
+  return (skinWrapper.value?.clientWidth / 2 - config.elemementWidth / 2 - jumpToNumber.value * (config.elemementWidth + 10) + getRandomNum())
+})
 </script>
 
 
@@ -87,15 +128,18 @@ const reset = () => {
     <input type="number" v-model="jumpToNumber">
     <button @click="jump()">Random</button>
     <button @click="reset()">Reset</button>
+    <button @click="genList()">Spin</button>
     <div class="wrapper">
       <div class="pointer"></div>
       <div class="skin-wrapper" ref="skinWrapper">
-        <div class="skins"
-          :style="{ 'translate': '' + (skinWrapper?.clientWidth / 2 - config.elemementWidth / 2 - jumpToNumber * config.elemementWidth + getRandomNum()) + 'px' }">
+        <div class="skins" :style="{ 'translate': '' + translateAmount + 'px' }">
           <!-- <div class="skins" :style="{ 'translate': '-' + jumpToNumber * 100 - skinWrapper?.clientWidth / 2 + 'px' }"> -->
-          <div v-for="skin in skins" class="skin" :style="{ 'width': config.elemementWidth + 'px' }">
+          <div v-for="skin in probList" class="skin" :style="{ 'width': config.elemementWidth + 'px' }"
+            :class="{ 'highlighted': skin === jumpToNumber && ready }">
             <h1>{{ skin }}</h1>
-            <img :src="images[Math.floor(Math.random() * images.length)]" alt="">
+
+            <!-- <h1>{{ selectItem() }}</h1> -->
+            <!-- <img :src="images[Math.floor(Math.random() * images.length)]" alt=""> -->
           </div>
         </div>
       </div>
@@ -107,7 +151,9 @@ const reset = () => {
 <style>
 .wrapper {
   width: 90vw;
-  background: var(--element-background);
+  /* background: var(--element-background); */
+  border: 2px solid var(--interactive-color);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   padding: 1rem 0;
   border-radius: 0.5rem;
   position: relative;
@@ -116,23 +162,28 @@ const reset = () => {
 .pointer {
   width: 0.25rem;
   height: 100%;
-  background: var(--text-shaded);
+  background: var(--orange-gradient);
+  z-index: 2;
   /* border-radius: 1rem; */
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   margin: auto;
+  box-shadow: 0 0 5px black;
 }
 
 .skins {
   /* transform: translateX(-200px); */
   display: flex;
-  transition: translate v-bind('config.animationDuration') cubic-bezier(0, .67, .63, 1);
+  gap: 10px;
+  transition: translate v-bind('animationDurationString') cubic-bezier(0, .67, .63, 1);
 }
 
 .skin-wrapper {
-  overflow: hidden;
+  padding: 1rem 0;
+  overflow-x: hidden;
+  overflow-y: visible;
   position: relative;
 }
 
@@ -140,17 +191,28 @@ const reset = () => {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 100px;
-  height: 100px;
-  outline: 1px solid red;
+  /* width: 100px; */
+  height: 150px;
+  /* outline: 1px solid red; */
   position: relative;
+  border-radius: 0.5rem;
   /* border: 1px solid var(--interactive-color-hover); */
-  /* background: var(--interactive-color); */
+  background: var(--interactive-color);
+  transition: all 800ms ease;
+  border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.skin.highlighted {
+  background: var(--interactive-color-hover);
+  /* box-shadow: 0 0 10px 5px red; */
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
+  border-color: var(--coin-color);
 }
 
 .skin img {
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
+  object-fit: cover;
 }
 
 .skin h1 {
