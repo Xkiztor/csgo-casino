@@ -3,6 +3,7 @@ import { onClickOutside, useScroll, useWindowSize } from '@vueuse/core';
 import { computed, ref, watch, watchEffect } from 'vue';
 import Case from '../components/Case.vue';
 
+
 const showBigImage = ref(false)
 const bigImageUrl = ref('')
 
@@ -23,7 +24,7 @@ watch(pageStart, () => {
 })
 
 const fetcher = async () => {
-  await fetch(`http://localhost:8010/proxy/market/search/render/?search_descriptions=0&sort_column=${sortColumn.value}&sort_dir=${sortDir.value}&appid=730&norender=1&count=${pageSize}&start=${pageStart.value}&query=${query.value}`, { mode: 'cors' })
+  await fetch(`/http://localhost:8010/proxy/market/search/render/?search_descriptions=0&sort_column=${sortColumn.value}&sort_dir=${sortDir.value}&appid=730&norender=1&count=${pageSize}&start=${pageStart.value}&query=${query.value}`, { mode: 'cors' })
     .then((response) => response.json())
     .then((data) => array.value = data)
     .then((data) => console.log(data))
@@ -42,6 +43,7 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
 </script>
 
 <template>
+  
   <div class="home-page">
     <section>
       <h1><span class="bg-text">Buy Cases</span></h1>
@@ -86,10 +88,13 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
       </div>
     </section>
   </div>
-</template>
+
+  </template>
 
 
 <style>
+
+
 .home-page {
   display: flex;
   width: 100%;
