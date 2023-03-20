@@ -1,7 +1,12 @@
 <script setup lang='ts'>
+import { createClient } from '@supabase/supabase-js'
+import { stat } from 'fs';
+
 const user = useSupabaseUser()
 const client = useSupabaseClient()
 const authClient = useSupabaseAuthClient()
+
+const globalState = useGlobalState()
 
 const chosenSide = ref('')
 const winnerSide = ref('')
@@ -14,7 +19,7 @@ const hasChosenBet = ref(false)
 
 const { ready, start, stop } = useTimeout(3000, { controls: true })
 
-const flip = () => {
+const flip = async () => {
   if (!winnerSide.value) {
     start()
     let number = Math.random()
@@ -22,59 +27,38 @@ const flip = () => {
     if (number > 0.5) {
       winnerSide.value = 'ct'
       if (winnerSide.value === chosenSide.value) {
+        console.log('you won');
         youWon.value = true
-
+        coinsChange.value = bet.value
       } else {
-
+        console.log('you lost');
+        youWon.value = false
+        coinsChange.value = bet.value
       }
     } else {
       winnerSide.value = 't'
+      if (winnerSide.value === chosenSide.value) {
+        // console.log('you won');
+        youWon.value = true
+      } else {
+        // console.log('you lost');
+        youWon.value = false
+      }
     }
   }
 }
 
-const userData = ref()
 
-const fetchUserData = async () => {
-  const { data, error } = await client
-    .from('user-data')
-    .select()
-    .eq('user_id', `${user.value?.id}`)
-    .single();
-  if (data) {
-    userData.value = data;
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-}
-
-fetchUserData()
-
-const newCoinAmount = computed(() => {
-  console.log(userData.value?.coins);
-  if (youWon.value) {
-    return userData.value?.coins + bet.value
-  } else {
-    return userData.value?.coins - bet.value
+watch(ready, () => {
+  console.log(ready.value);
+  if (ready.value && winnerSide.value) {
+    if (winnerSide.value === chosenSide.value) {
+      globalState.updateUserCoins(globalState.userData.value.coins + bet.value)
+    } else {
+      globalState.updateUserCoins(globalState.userData.value.coins - bet.value)
+    }
   }
 })
-
-watch(newCoinAmount, () => {
-  updateUserCoins()
-})
-
-const updateUserCoins = async () => {
-  console.log('updating coins');
-  const { error } = await client
-    .from('user-data')
-    .update({ coins: newCoinAmount })
-    .eq('user_id', `${user.value?.id}`)
-  if (error) {
-    console.log(error);
-  }
-}
 
 </script>
 
@@ -87,7 +71,7 @@ const updateUserCoins = async () => {
       <div class="bet-wrapper">
         <div class="bet-input">
           <Icon name="mingcute:coin-2-fill" />
-          <input type="nunmber" v-model="bet">
+          <input type="number" v-model="bet">
         </div>
         <button @click="hasChosenBet = true">Next</button>
       </div>
@@ -113,10 +97,10 @@ const updateUserCoins = async () => {
       </div>
       <div class="results" :class="{ 'show-results': ready && winnerSide }">
         <p v-if="ready">{{ winnerSide === chosenSide ? 'You Won!' : 'You lost' }} <span>
-            <Icon name="mingcute:coin-2-fill" />{{ youWon ? '' : '-' }}{{ coinsChange }}
+            <Icon name="mingcute:coin-2-fill" />{{ winnerSide === chosenSide ? '+' : '-' }}{{ bet }}
           </span></p>
         <p v-else>...</p>
-        <button @click="chosenSide = '', winnerSide = '', youWon = false">
+        <button @click="chosenSide = '', winnerSide = '', youWon = false, bet = 0, hasChosenBet = false">
           <Icon name="material-symbols:replay-rounded" />Play agian
         </button>
       </div>

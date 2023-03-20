@@ -13,7 +13,7 @@ console.log(user.value?.id)
 //   .eq('user_id', user.value?.id)
 //   .single()
 
-const userData = ref()
+const globalState = useGlobalState()
 
 const { width, height } = useWindowSize()
 const showMenu = ref(false)
@@ -46,23 +46,6 @@ watch(user, (newVal, oldVal) => {
     }
   }
 })
-
-const fetchUserData = async () => {
-  const { data, error } = await client
-    .from('user-data')
-    .select()
-    .eq('user_id', `${user.value?.id}`)
-    .single();
-  if (data) {
-    userData.value = data;
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-}
-
-fetchUserData()
 
 useHead({
   title: 'CS:GO Casino'
@@ -101,7 +84,7 @@ useHead({
       <div class="right" v-if="showMenu || width > 700">
         <p class="coins">
           <Icon name="mingcute:coin-2-fill" />
-          <span v-if="user?.id && userData">{{ userData.coins }}</span>
+          <span v-if="user?.id && globalState.userData">{{ globalState.userData.value?.coins }}</span>
           <!-- <span v-if="user?.id">{{ state.coins.value }}</span> -->
           <span v-else>0</span>
         </p>
