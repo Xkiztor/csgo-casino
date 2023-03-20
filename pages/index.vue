@@ -3,6 +3,7 @@ import { onClickOutside, useScroll, useWindowSize } from '@vueuse/core';
 import { computed, ref, watch, watchEffect } from 'vue';
 import Case from '../components/Case.vue';
 
+
 const showBigImage = ref(false)
 const bigImageUrl = ref('')
 
@@ -23,7 +24,7 @@ watch(pageStart, () => {
 })
 
 const fetcher = async () => {
-  await fetch(`http://localhost:8010/proxy/market/search/render/?search_descriptions=0&sort_column=${sortColumn.value}&sort_dir=${sortDir.value}&appid=730&norender=1&count=${pageSize}&start=${pageStart.value}&query=${query.value}`, { mode: 'cors' })
+  await fetch(`/http://localhost:8010/proxy/market/search/render/?search_descriptions=0&sort_column=${sortColumn.value}&sort_dir=${sortDir.value}&appid=730&norender=1&count=${pageSize}&start=${pageStart.value}&query=${query.value}`, { mode: 'cors' })
     .then((response) => response.json())
     .then((data) => array.value = data)
     .then((data) => console.log(data))
@@ -42,6 +43,7 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
 </script>
 
 <template>
+  
   <div class="home-page">
     <!-- <svg viewBox="0 0 1440 320" class="wave">
         <defs>
@@ -62,44 +64,49 @@ const { width: screenWidth, height: screenHight } = useWindowSize()
         <button @click="scrollX -= screenWidth * 0.5" class="left scroll-buttons">←</button>
         <button @click="scrollX += screenWidth * 0.5" class="right scroll-buttons">→</button>
         <div class="cases" ref="pageScrollEl">
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
-          <Case :price="9" />
-          <Case :price="5" />
-          <Case :price="2" />
-          <Case :price="100" />
-          <Case :price="1" />
+       
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            <Case :price="9" />
+            <Case :price="5" />
+            <Case :price="2" />
+            <Case :price="100" />
+            <Case :price="1" />
+            
         </div>
       </div>
     </section>
   </div>
-</template>
+
+  </template>
 
 
 <style>
+
+
 .home-page {
   display: flex;
   width: 100%;
@@ -157,9 +164,12 @@ span.styled-text {
   border-radius: 1rem;
   /* padding: 1rem 0; */
   padding: 0;
-  overflow: scroll;
+  overflow-x: scroll;
   position: relative;
+  scroll-snap-type: x mandatory;
 }
+  
+
 
 .cases-wrapper::before {
   width: 90%;

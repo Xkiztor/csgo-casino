@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     public: {
       appDomain: process.env.APP_URL,
     },
+   },
   },
   modules: ['@vueuse/nuxt', 'nuxt-icon', '@nuxtjs/supabase'],
 });
